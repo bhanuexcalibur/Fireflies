@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fireflies.ai · PMM · Bhanu Kumar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Literata:ital,opsz,wght@0,7..72,300;0,7..72,400;1,7..72,300;1,7..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  /* Fireflies brand palette, extended for dark UI */
+  --bg:    #080c10;
+  --bg2:   #0d1219;
+  --bg3:   #131c27;
+  --bg4:   #192433;
+  --bg5:   #1e2c3f;
+  --bdr:   rgba(255,255,255,0.055);
+  --bdr2:  rgba(255,255,255,0.10);
+  --bdr3:  rgba(255,255,255,0.18);
+  --t1:    #e4ebf3;
+  --t2:    #7a90a8;
+  --t3:    #3e5168;
+  /* Fireflies orange-yellow fire palette */
+  --fire:     #ff6b1a;
+  --fire2:    #ffaa44;
+  --fire3:    rgba(255,107,26,0.12);
+  --fire4:    rgba(255,107,26,0.06);
+  --fire-glow:rgba(255,107,26,0.22);
+  --fire-t:   #ffa06b;
+  /* Accent: electric teal for contrast */
+  --teal:     #1fe3c4;
+  --teal-dim: rgba(31,227,196,0.09);
+  --amber:    #fbbf24;
+  --amb-dim:  rgba(251,191,36,0.09);
+  --red:      #f87171;
+  --red-dim:  rgba(248,113,113,0.09);
+  --blu:      #60a5fa;
+  --blu-dim:  rgba(96,165,250,0.09);
+  --grn:      #34d399;
+  --grn-dim:  rgba(52,211,153,0.09);
+  --pur:      #a78bfa;
+  --pur-dim:  rgba(167,139,250,0.09);
+}
+
+html{scroll-behavior:smooth;scroll-padding-top:60px;}
+
+body{
+  background:var(--bg);
+  color:var(--t1);
+  font-family:'Syne',system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* subtle grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* dot grid */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle, rgba(255,107,26,0.06) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+/* ============================================================ NAV */
+.nav{
+  position:sticky;top:0;z-index:500;
+  background:rgba(8,12,16,0.92);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--bdr);
+  padding:0 5vw;
+}
+.nav-i{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;gap:16px;
+}
+.nav-brand{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:var(--t2);letter-spacing:0.04em;
+}
+.flame-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--fire);
+  box-shadow:0 0 8px var(--fire-glow);
+  animation:flamepulse 2.2s ease-in-out infinite;
+}
+@keyframes flamepulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.6);}}
+.nav-links{display:flex;gap:2px;}
+.nl{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;
+  padding:5px 14px;border-radius:6px;
+  border:1px solid transparent;
+  color:var(--t3);text-decoration:none;
+  transition:all 0.13s;white-space:nowrap;letter-spacing:0.03em;
+}
+.nl:hover{color:var(--t2);border-color:var(--bdr);background:var(--bg3);}
+.nl.act{color:var(--fire-t);}
+.nl.cta{
+  background:var(--fire);border-color:var(--fire);
+  color:#fff;font-weight:600;margin-left:4px;
+}
+.nl.cta:hover{opacity:0.85;}
+.hbg{
+  display:none;flex-direction:column;gap:5px;
+  cursor:pointer;background:none;border:none;padding:4px;flex-shrink:0;
+}
+.hbg span{display:block;width:20px;height:1.5px;background:var(--t1);border-radius:2px;transition:all .3s;}
+.hbg.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hbg.open span:nth-child(2){opacity:0;}
+.hbg.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+.mob-menu{
+  display:none;position:fixed;inset:0;top:60px;
+  background:var(--bg);z-index:490;
+  flex-direction:column;padding:28px 5vw;
+  border-top:1px solid var(--bdr);
+}
+.mob-menu.open{display:flex;}
+.mob-menu a{
+  display:block;font-size:20px;
+  font-family:'Literata',serif;font-style:italic;font-weight:300;
+  color:var(--t1);text-decoration:none;
+  padding:16px 0;border-bottom:1px solid var(--bdr);
+}
+.mob-menu a:last-child{border-bottom:none;}
+.mob-menu a.mfire{color:var(--fire-t);}
+@media(max-width:800px){.nav-links{display:none;}.hbg{display:flex;}}
+
+/* ============================================================ LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:0 5vw;position:relative;z-index:1;}
+section{padding:80px 0;border-bottom:1px solid var(--bdr);}
+
+/* ============================================================ REVEAL */
+.rv{opacity:0;transform:translateY(18px);transition:opacity 0.5s ease,transform 0.5s ease;}
+.rv.in{opacity:1;transform:none;}
+
+/* ============================================================ SCROLLBAR */
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--fire);border-radius:2px;}
+
+/* ============================================================ HERO */
+.hero{
+  min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+  padding:80px 5vw 60px;max-width:1200px;margin:0 auto;
+  position:relative;z-index:1;
+  border-bottom:1px solid var(--bdr);
+}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);
+  margin-bottom:40px;
+}
+.hero-tag-bar{width:28px;height:1px;background:var(--fire);}
+.hero-tag-txt{color:var(--fire-t);}
+
+.hero-hed{
+  font-size:clamp(52px,8.5vw,110px);
+  font-weight:800;line-height:0.92;
+  letter-spacing:-0.03em;
+  color:var(--t1);
+  margin-bottom:28px;
+}
+.hero-hed .ln2{
+  color:var(--fire);
+  display:block;
+  /* fire gradient on the big line */
+  background:linear-gradient(90deg, var(--fire) 0%, var(--fire2) 60%, var(--amber) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-hed .ln3{
+  color:var(--t2);
+  font-weight:400;
+  font-family:'Literata',serif;
+  font-style:italic;
+  font-size:0.58em;
+  display:block;
+  margin-top:12px;
+  -webkit-text-fill-color:var(--t2);
+  background:none;
+}
+
+.hero-deck{
+  font-family:'Literata',serif;font-weight:300;
+  font-size:clamp(16px,1.8vw,20px);
+  color:var(--t2);line-height:1.78;
+  max-width:560px;margin-bottom:44px;
+}
+.hero-deck strong{color:var(--t1);font-weight:400;}
+
+/* stat strip */
+.hero-strip{
+  display:flex;gap:0;
+  border:1px solid var(--bdr);border-radius:10px;
+  overflow:hidden;max-width:760px;
+  margin-bottom:40px;
+}
+.hs{
+  flex:1;padding:20px 22px;
+  border-right:1px solid var(--bdr);
+  background:var(--bg2);
+}
+.hs:last-child{border-right:none;}
+.hs-n{
+  font-size:clamp(22px,3vw,32px);font-weight:700;
+  color:var(--fire2);line-height:1;margin-bottom:5px;
+  font-family:'Syne',sans-serif;
+}
+.hs-n sup{font-size:0.5em;vertical-align:super;}
+.hs-d{font-size:11px;color:var(--t3);line-height:1.4;font-family:'JetBrains Mono',monospace;letter-spacing:0.03em;}
+@media(max-width:600px){.hero-strip{flex-direction:column;max-width:100%;}.hs{border-right:none;border-bottom:1px solid var(--bdr);}.hs:last-child{border-bottom:none;}}
+
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;}
+.btn-fire{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--fire);color:#fff;
+  padding:12px 26px;border-radius:8px;
+  font-size:13px;font-weight:600;font-family:'Syne',sans-serif;
+  letter-spacing:0.04em;text-decoration:none;
+  transition:all 0.15s;
+}
+.btn-fire:hover{background:var(--fire2);transform:translateY(-1px);}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--t2);
+  padding:11px 22px;border-radius:8px;
+  border:1px solid var(--bdr2);
+  font-size:13px;font-weight:500;text-decoration:none;
+  transition:all 0.15s;
+}
+.btn-ghost:hover{border-color:var(--bdr3);color:var(--t1);}
+
+/* ============================================================ SECTION LABEL */
+.sec-lbl{display:flex;align-items:center;gap:14px;margin-bottom:48px;}
+.sec-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--fire-t);background:var(--fire3);
+  border:1px solid rgba(255,107,26,0.22);
+  border-radius:4px;padding:3px 10px;white-space:nowrap;
+}
+.sec-ttl{
+  font-size:11px;font-weight:500;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--t3);
+  font-family:'JetBrains Mono',monospace;
+}
+
+/* ============================================================ BADGES */
+.badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:3px 10px;border-radius:4px;white-space:nowrap;
+}
+.b-gap{background:var(--red-dim);color:var(--red);}
+.b-ok{background:var(--grn-dim);color:var(--grn);}
+.b-opp{background:var(--amb-dim);color:var(--amber);}
+.b-fix{background:var(--blu-dim);color:var(--blu);}
+.b-miss{background:var(--pur-dim);color:var(--pur);}
+.b-fire{background:var(--fire3);color:var(--fire-t);}
+
+/* ============================================================ 01: MARKET MOMENT */
+.moment-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin-bottom:32px;
+}
+.moment-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.mcard{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;padding:26px;
+}
+.mcard.accent{border-color:rgba(255,107,26,0.25);background:var(--fire4);}
+.mcard.full{grid-column:1/-1;}
+.mcard-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:12px;display:block;
+}
+.mcard.accent .mcard-lbl{color:var(--fire-t);}
+.mcard h4{
+  font-family:'Literata',serif;font-style:italic;font-weight:300;
+  font-size:19px;color:var(--t1);margin-bottom:10px;line-height:1.35;
+}
+.mcard p{font-size:14px;color:var(--t2);line-height:1.72;}
+.mcard p strong{color:var(--t1);font-weight:500;}
+.mcard ul{padding-left:16px;font-size:14px;color:var(--t2);line-height:2.1;}
+.mcard ul li strong{color:var(--t1);font-weight:500;}
+@media(max-width:660px){.moment-grid,.moment-grid.three{grid-template-columns:1fr;}}
+
+/* shift line: horizontal scroll-track */
+.shift-track{
+  display:flex;gap:0;
+  border:1px solid var(--bdr);border-radius:10px;
+  overflow:hidden;margin-bottom:10px;
+}
+.shift-pt{
+  flex:1;padding:20px;
+  background:var(--bg2);border-right:1px solid var(--bdr);
+  text-align:center;
+  position:relative;
+}
+.shift-pt:last-child{border-right:none;}
+.shift-pt.now{background:var(--fire4);border-color:rgba(255,107,26,0.2);}
+.shift-arrow{
+  position:absolute;right:-14px;top:50%;transform:translateY(-50%);
+  font-size:18px;color:var(--t3);z-index:2;
+}
+.shift-stage{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:0.14em;text-transform:uppercase;color:var(--t3);
+  margin-bottom:8px;
+}
+.shift-pt.now .shift-stage{color:var(--fire-t);}
+.shift-val{font-size:15px;font-weight:600;color:var(--t2);line-height:1.35;}
+.shift-pt.now .shift-val{color:var(--t1);}
+@media(max-width:680px){.shift-track{flex-direction:column;}.shift-arrow{display:none;}}
+
+/* ============================================================ 02: MESSAGING AUDIT */
+.audit-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
+.atab{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;
+  padding:6px 16px;border-radius:6px;
+  border:1px solid var(--bdr);color:var(--t2);
+  background:transparent;cursor:pointer;transition:all 0.13s;letter-spacing:0.02em;
+}
+.atab:hover{border-color:var(--bdr2);color:var(--t1);}
+.atab.on{background:var(--fire);border-color:var(--fire);color:#fff;font-weight:600;}
+.apanel{display:none;}
+.apanel.on{display:block;}
+
+.audit-block{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;overflow:hidden;margin-bottom:10px;
+}
+.audit-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--bdr);
+  flex-wrap:wrap;gap:10px;
+}
+.audit-title{font-size:14px;font-weight:600;color:var(--t1);}
+.audit-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--bdr);
+}
+.audit-row:last-child{border-bottom:none;}
+.audit-cell{padding:16px 22px;font-size:14px;line-height:1.68;color:var(--t2);}
+.audit-cell:first-child{border-right:1px solid var(--bdr);}
+.audit-cell strong{
+  display:block;font-size:10px;font-weight:600;
+  font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--t3);margin-bottom:6px;
+}
+@media(max-width:640px){.audit-row{grid-template-columns:1fr;}.audit-cell:first-child{border-right:none;border-bottom:1px solid var(--bdr);}}
+
+/* ============================================================ 03: PERSONA MATRIX */
+.persona-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:10px;margin-bottom:28px;
+}
+.ptab{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;padding:20px;cursor:pointer;transition:all 0.15s;
+}
+.ptab:hover{border-color:var(--bdr2);}
+.ptab.on{border-color:var(--fire);background:var(--fire3);}
+.ptab-role{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:0.12em;text-transform:uppercase;color:var(--t3);margin-bottom:7px;
+}
+.ptab.on .ptab-role{color:var(--fire-t);}
+.ptab-name{font-size:14px;font-weight:600;color:var(--t1);}
+.ptab-hint{font-size:12px;color:var(--t2);margin-top:4px;line-height:1.4;}
+@media(max-width:600px){.persona-grid{grid-template-columns:1fr;}}
+
+.persona-out{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;overflow:hidden;
+}
+.persona-idle{
+  padding:40px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:var(--t3);letter-spacing:0.04em;
+}
+.persona-content{display:none;padding:28px 30px;}
+.persona-content.on{display:block;}
+.pc-role{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--fire-t);margin-bottom:14px;display:block;
+}
+.pc-hed{
+  font-family:'Literata',serif;font-style:italic;font-weight:300;
+  font-size:clamp(18px,2.2vw,23px);color:var(--t1);
+  line-height:1.3;margin-bottom:16px;
+}
+.pc-body{font-size:14px;color:var(--t2);line-height:1.78;}
+.pc-body strong{color:var(--t1);font-weight:500;}
+.pc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px;}
+.pc-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.06em;padding:4px 10px;border-radius:5px;
+  background:var(--bg3);border:1px solid var(--bdr);color:var(--t3);
+}
+
+/* ============================================================ 04: GTM BRIEF */
+.gtm-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.gcard{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;padding:26px;
+}
+.gcard.full{grid-column:1/-1;}
+.gcard.hl{border-color:rgba(255,107,26,0.25);background:var(--fire4);}
+.gcard-lbl{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--t3);margin-bottom:12px;display:block;
+}
+.gcard.hl .gcard-lbl{color:var(--fire-t);}
+.gcard h4{
+  font-family:'Literata',serif;font-style:italic;font-weight:300;
+  font-size:18px;color:var(--t1);margin-bottom:10px;line-height:1.35;
+}
+.gcard p{font-size:14px;color:var(--t2);line-height:1.72;}
+.gcard p strong{color:var(--t1);font-weight:500;}
+.gcard ul{padding-left:16px;font-size:14px;color:var(--t2);line-height:2.1;}
+.gcard ul li{margin-bottom:2px;}
+.gcard ul strong{color:var(--t1);font-weight:500;}
+@media(max-width:660px){.gtm-grid{grid-template-columns:1fr;}}
+
+/* funnel */
+.funnel{
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid var(--bdr);border-radius:10px;
+  overflow:hidden;margin-top:10px;
+}
+.funnel-step{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 22px;
+  border-bottom:1px solid var(--bdr);
+  background:var(--bg2);
+  transition:background 0.15s;
+}
+.funnel-step:last-child{border-bottom:none;}
+.funnel-step:hover{background:var(--bg3);}
+.f-num{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:500;color:var(--fire-t);
+  min-width:22px;
+}
+.f-stage{
+  font-size:13px;font-weight:600;color:var(--t1);
+  min-width:130px;
+}
+.f-desc{font-size:13px;color:var(--t2);line-height:1.55;}
+.f-tag{margin-left:auto;flex-shrink:0;}
+@media(max-width:580px){.funnel-step{flex-wrap:wrap;gap:8px;}.f-tag{margin-left:0;}}
+
+/* ============================================================ 05: COPY */
+.copy-block{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;overflow:hidden;margin-bottom:10px;
+}
+.copy-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 22px;border-bottom:1px solid var(--bdr);
+  flex-wrap:wrap;gap:10px;
+}
+.copy-ch{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  letter-spacing:0.06em;color:var(--t2);
+}
+.copy-body{padding:22px;}
+.copy-hed{
+  font-family:'Literata',serif;font-style:italic;
+  font-size:clamp(19px,2.2vw,24px);font-weight:400;
+  color:var(--t1);margin-bottom:12px;line-height:1.3;
+}
+.copy-txt{font-size:14px;color:var(--t2);line-height:1.78;margin-bottom:10px;}
+.copy-txt:last-of-type{margin-bottom:0;}
+.copy-why{
+  margin-top:16px;padding:14px 16px;
+  background:var(--bg3);border-left:2px solid var(--fire);
+  border-radius:0 6px 6px 0;
+  font-size:13px;color:var(--t3);line-height:1.65;
+}
+.copy-why strong{color:var(--t2);}
+
+/* ============================================================ 06: OTHER WORK */
+.wgrid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+.wcard{
+  background:var(--bg2);border:1px solid var(--bdr);
+  border-radius:10px;padding:22px;
+  text-decoration:none;
+  display:flex;flex-direction:column;gap:10px;
+  transition:all 0.15s;
+}
+.wcard:hover{border-color:var(--bdr2);background:var(--bg3);transform:translateY(-2px);}
+.wcard-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:0.06em;text-transform:uppercase;color:var(--t3);
+}
+.wcard h4{font-size:15px;font-weight:600;color:var(--t1);}
+.wcard p{font-size:13px;color:var(--t2);line-height:1.65;flex:1;}
+.wcard-arr{color:var(--fire);font-size:16px;margin-top:4px;}
+@media(max-width:760px){.wgrid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.wgrid{grid-template-columns:1fr;}}
+
+/* ============================================================ FOOTER / SIG */
+.sig{
+  max-width:1200px;margin:0 auto;padding:48px 5vw;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:24px;
+  position:relative;z-index:1;
+}
+.sig-name{
+  font-size:22px;font-weight:700;color:var(--t1);
+  margin-bottom:10px;
+}
+.sig-name span{color:var(--fire);}
+.sig-links{font-size:13px;color:var(--t3);line-height:2.2;}
+.sig-links a{color:var(--t2);text-decoration:none;transition:color 0.13s;}
+.sig-links a:hover{color:var(--fire-t);}
+.sig-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.sbtn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:10px 22px;border-radius:7px;
+  font-size:13px;font-weight:600;text-decoration:none;
+  transition:all 0.15s;
+}
+.sbtn.pri{background:var(--fire);color:#fff;}
+.sbtn.pri:hover{background:var(--fire2);transform:translateY(-1px);}
+.sbtn.ghost{
+  background:transparent;color:var(--t2);
+  border:1px solid var(--bdr2);
+}
+.sbtn.ghost:hover{border-color:var(--bdr3);color:var(--t1);}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-i">
+    <div class="nav-brand">
+      <div class="flame-dot"></div>
+      fireflies.ai &nbsp;/&nbsp; bhanu kumar
+    </div>
+    <div class="nav-links">
+      <a class="nl" href="#moment">Market</a>
+      <a class="nl" href="#audit">Audit</a>
+      <a class="nl" href="#personas">Personas</a>
+      <a class="nl" href="#gtm">GTM</a>
+      <a class="nl" href="#copy">Copy</a>
+      <a class="nl" href="#work">Work</a>
+      <a class="nl cta" href="mailto:bhanukumar0902@gmail.com">Get in touch</a>
+    </div>
+    <button class="hbg" id="hbg" onclick="toggleMob()" aria-label="menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mob-menu" id="mobm">
+  <a href="#moment" onclick="closeMob()">Market Moment</a>
+  <a href="#audit" onclick="closeMob()">Messaging Audit</a>
+  <a href="#personas" onclick="closeMob()">Personas</a>
+  <a href="#gtm" onclick="closeMob()">GTM Brief</a>
+  <a href="#copy" onclick="closeMob()">Copy</a>
+  <a href="#work" onclick="closeMob()">Other Work</a>
+  <a href="mailto:bhanukumar0902@gmail.com" class="mfire">Get in touch</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag rv">
+    <div class="hero-tag-bar"></div>
+    <span class="hero-tag-txt">Product Marketing</span>
+    <span>&bull;</span>
+    <span>Fireflies.ai</span>
+  </div>
+
+  <h1 class="hero-hed rv">
+    Meetings are where<br>
+    <span class="ln2">decisions happen.</span>
+    <span class="ln3">Not all of them get captured. Not all captured insights get used. That's the problem Fireflies is actually solving.</span>
+  </h1>
+
+  <p class="hero-deck rv">
+    The market framing is shifting. <strong>Transcription is table stakes.</strong> The next battleground is knowledge activation: turning conversation data into searchable context, triggered workflows, and team intelligence. This is a brief on where Fireflies sits in that shift, and where product marketing can accelerate the narrative.
+  </p>
+
+  <div class="hero-strip rv">
+    <div class="hs">
+      <div class="hs-n">20M<sup>+</sup></div>
+      <div class="hs-d">users across 500K+ orgs</div>
+    </div>
+    <div class="hs">
+      <div class="hs-n">$1B</div>
+      <div class="hs-d">valuation, profitable since 2023</div>
+    </div>
+    <div class="hs">
+      <div class="hs-n">75%</div>
+      <div class="hs-d">Fortune 500 presence</div>
+    </div>
+    <div class="hs">
+      <div class="hs-n">200<sup>+</sup></div>
+      <div class="hs-d">AI apps launched April 2025</div>
+    </div>
+  </div>
+
+  <div class="hero-cta rv">
+    <a class="btn-fire" href="#moment">Read the brief</a>
+    <a class="btn-ghost" href="https://drive.google.com/file/d/1OO8EEGRcKXnSBdIfGVzNjkymMMsut0EL/view" target="_blank" rel="noopener">Full resume &rarr;</a>
+  </div>
+</div>
+
+<!-- ========== 01: MARKET MOMENT ========== -->
+<section id="moment">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">01</span>
+      <span class="sec-ttl">Market Moment</span>
+    </div>
+
+    <!-- shift track -->
+    <div class="shift-track rv">
+      <div class="shift-pt">
+        <div class="shift-arrow">›</div>
+        <div class="shift-stage">Wave 1</div>
+        <div class="shift-val">Record the call</div>
+      </div>
+      <div class="shift-pt">
+        <div class="shift-arrow">›</div>
+        <div class="shift-stage">Wave 2</div>
+        <div class="shift-val">Transcribe &amp; summarize</div>
+      </div>
+      <div class="shift-pt">
+        <div class="shift-arrow">›</div>
+        <div class="shift-stage">Wave 3</div>
+        <div class="shift-val">Search across meetings</div>
+      </div>
+      <div class="shift-pt now">
+        <div class="shift-stage">Wave 4 · Now</div>
+        <div class="shift-val">Answer questions, trigger actions, and know things live</div>
+      </div>
+    </div>
+    <p class="rv" style="font-size:13px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-bottom:40px;letter-spacing:0.03em;">Fireflies is the only meeting tool operating across all four waves simultaneously.</p>
+
+    <div class="moment-grid rv">
+      <div class="mcard accent">
+        <span class="mcard-lbl">The inflection point</span>
+        <h4>The category is being redefined, and Fireflies is positioned to write the new definition.</h4>
+        <p>The AI meeting assistant market hit $1.6B in 2024. It's expected to reach $6.2B by 2033 at a 21% CAGR. Otter.ai, the category pioneer, is now facing a federal lawsuit over consent. Microsoft Copilot and Google Gemini are adding meeting intelligence as bundled features. The window for a standalone, cross-platform meeting intelligence layer to become indispensable is open. It won't stay open forever.</p>
+      </div>
+      <div class="mcard">
+        <span class="mcard-lbl">The real competitive threat</span>
+        <h4>It's not Fathom or Otter. It's meeting intelligence becoming a checkbox feature.</h4>
+        <p>Zoom, Teams, and Google Meet are all adding AI summaries natively. The risk isn't another notetaker. It's the meeting platforms themselves absorbing basic transcription and making standalone tools look redundant. <strong>Fireflies' answer to this is correct:</strong> go beyond the meeting platforms by working across all of them, offering depth they can't match, and owning the layer that actually activates institutional knowledge. The messaging needs to say this more directly.</p>
+      </div>
+    </div>
+
+    <div class="moment-grid three rv">
+      <div class="mcard">
+        <span class="mcard-lbl">What Talk to Fireflies actually signals</span>
+        <h4>The first meeting assistant to bring the world's knowledge into the room.</h4>
+        <p>The Perplexity integration isn't a feature. It's a category statement. <strong>No other meeting tool has done this.</strong> When a prospect can say "Hey Fireflies, compare our pricing to Competitor X" mid-call and get a live answer, the product stops being a notetaker and becomes a decision support layer. That's a fundamentally different story to tell.</p>
+      </div>
+      <div class="mcard">
+        <span class="mcard-lbl">The 200+ AI apps moment</span>
+        <h4>From "summarize &amp; store" to "summarize &amp; do."</h4>
+        <p>The April 2025 launch of 200+ agentic AI apps shifted Fireflies' value prop fundamentally. Sales can auto-update CRM. Recruiting can generate scorecards. Ops can extract action items to project tools. The meeting ends, the work starts automatically. This is PLG acceleration waiting to be unlocked: every new workflow triggered by a Fireflies app is a retention hook and a shareability moment.</p>
+      </div>
+      <div class="mcard">
+        <span class="mcard-lbl">Positioning tension to resolve</span>
+        <h4>Fireflies is too often described as a notetaker. It isn't one anymore.</h4>
+        <p>Homepage hero copy still leans into note-taking language. The product has evolved well past that. The messaging hasn't kept pace. The risk: sophisticated buyers comparing tools see features, not a category. The opportunity: own "conversation intelligence" more explicitly, with the receipts to back it. <strong>Profitable, $1B, Fortune 500, real-time web search</strong>. Those facts tell a different story than "AI notetaker."</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 02: MESSAGING AUDIT ========== -->
+<section id="audit">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">02</span>
+      <span class="sec-ttl">Messaging Audit</span>
+    </div>
+
+    <div class="audit-tabs rv">
+      <button class="atab on" onclick="swAudit('hp',this)">Homepage</button>
+      <button class="atab" onclick="swAudit('feat',this)">Feature Pages</button>
+      <button class="atab" onclick="swAudit('comp',this)">Competitive Gap</button>
+    </div>
+
+    <!-- Homepage Panel -->
+    <div class="apanel on" id="ap-hp">
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">Hero Headline Framing</div>
+          <span class="badge b-opp">Opportunity</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current</strong>
+            "The #1 AI Meeting Assistant" sits as a market-claim headline. It tells you where Fireflies ranks, not what it does differently.
+          </div>
+          <div class="audit-cell">
+            <strong>Observation</strong>
+            Ranking claims are forgettable. The actual story, meetings becoming searchable institutional knowledge that triggers actions, is far more compelling. The claim should follow the insight, not replace it.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">"Talk to Fireflies" Launch Narrative</div>
+          <span class="badge b-gap">Gap</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current</strong>
+            The feature is described functionally: voice-activated web search during meetings. Accurate, but undersells the category significance.
+          </div>
+          <div class="audit-cell">
+            <strong>Observation</strong>
+            This is a first-of-its-kind move. No competitor has bridged live meeting conversation and real-time internet knowledge. The launch needed a category-claim frame, not a feature frame. The copy opportunity is still open.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">Profitability and Growth Story</div>
+          <span class="badge b-miss">Under-leveraged</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current</strong>
+            The company's profitability since 2023, without primary capital since 2021, is buried in blog posts and announcements. It barely appears in the main site narrative.
+          </div>
+          <div class="audit-cell">
+            <strong>Observation</strong>
+            In an AI market where most companies are burning cash aggressively, <strong>profitable and product-first</strong> is a credibility signal that enterprise buyers care about. It should be a trust anchor in conversion-oriented pages, especially enterprise and security-focused ones.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">Free Plan + 200+ AI Apps Discoverability</div>
+          <span class="badge b-opp">PLG Opportunity</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current</strong>
+            The AI apps suite is positioned as a premium power feature. The free-tier entry point exists but isn't connected to a "grow into this" narrative.
+          </div>
+          <div class="audit-cell">
+            <strong>Observation</strong>
+            The best PLG motion here is a breadcrumb: users sign up for free, see one AI app that saves them 20 minutes, and the upgrade case makes itself. The website can do more to surface that expansion journey before anyone sees a pricing page.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Feature Pages Panel -->
+    <div class="apanel" id="ap-feat">
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">AskFred Positioning</div>
+          <span class="badge b-opp">Opportunity</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current framing</strong>
+            AskFred is introduced as a GPT-powered chatbot for querying meetings. The name is charming; the copy is functional.
+          </div>
+          <div class="audit-cell">
+            <strong>Suggested angle</strong>
+            Reframe around memory. "AskFred remembers every meeting so you don't have to." The product isn't a search bar, it's distributed institutional memory with a conversation interface. The copy should lean into what teams actually lose without it: context from 6 months of customer calls, decisions made in Q1, commitments made last Thursday.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">Sales Use Case Landing Pages</div>
+          <span class="badge b-fix">Needs work</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current framing</strong>
+            Sales pages emphasize automated note-taking and CRM sync. The Gong/Chorus comparison is implicit but not addressed.
+          </div>
+          <div class="audit-cell">
+            <strong>Suggested angle</strong>
+            The message to sales teams should be: "Gong costs $1,200/user/year and needs a RevOps admin to run it. Fireflies connects to your CRM in 10 minutes and gives you 80% of the intelligence at a fraction of the cost." Specificity here wins. Vague claims about saving time don't move AEs.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">Multi-language Positioning (60+ languages)</div>
+          <span class="badge b-miss">Under-leveraged</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Current framing</strong>
+            Language support is mentioned in feature lists. It's not a narrative anchor.
+          </div>
+          <div class="audit-cell">
+            <strong>Suggested angle</strong>
+            For global distributed teams, this is the difference between a tool and an infrastructure decision. A Mumbai-based PM, a Berlin engineer, and a Toronto sales lead in the same meeting: Fireflies handles all three, auto-transcribed in their own language. That use case is waiting for a dedicated campaign or landing page.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Competitive Gap Panel -->
+    <div class="apanel" id="ap-comp">
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">vs. Fathom: Free Tier Perception</div>
+          <span class="badge b-gap">Gap to address</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Fathom's narrative</strong>
+            Unlimited free recording, no bot branding, and privacy-first. It wins the "free individual notetaker" perception clearly.
+          </div>
+          <div class="audit-cell">
+            <strong>Fireflies' response</strong>
+            Fireflies shouldn't compete with Fathom on free-tier generosity. The message to shift: Fathom is great for you alone. Fireflies is for your team. The intelligence compounds across everyone's meetings. Individual tools don't give you that.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">vs. Microsoft Copilot / Zoom AI: Native Bundling</div>
+          <span class="badge b-gap">Strategic gap</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Threat</strong>
+            "We already have Teams/Zoom, why buy a separate tool?" is a real objection that Copilot bundling accelerates.
+          </div>
+          <div class="audit-cell">
+            <strong>Fireflies' counter</strong>
+            Fireflies works across every platform your company uses. Copilot only knows about your Teams meetings. Your customers are on Zoom, your agency partners on Meet, your exec interviews on different platforms. Cross-platform memory is the moat. It needs a more direct expression in the copy.
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-block rv">
+        <div class="audit-head">
+          <div class="audit-title">vs. Gong: Enterprise Conversion Path</div>
+          <span class="badge b-opp">Displacement opportunity</span>
+        </div>
+        <div class="audit-row">
+          <div class="audit-cell">
+            <strong>Gong's weakness</strong>
+            Expensive, sales-specific, requires dedicated RevOps. Companies with 10-50 reps either can't afford it or underuse it.
+          </div>
+          <div class="audit-cell">
+            <strong>Fireflies' angle</strong>
+            Gong is built for enterprise sales floors. Fireflies is built for the whole company: sales, product, recruiting, leadership, ops. One tool, every team, fraction of the cost. A targeted campaign aimed at Gong customers with 10-50 reps could be extremely high-ROI.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 03: PERSONAS ========== -->
+<section id="personas">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">03</span>
+      <span class="sec-ttl">Buyer Personas</span>
+    </div>
+
+    <p class="rv" style="font-size:14px;color:var(--t2);max-width:580px;margin-bottom:28px;line-height:1.72;">Fireflies sits across four buyer types with very different jobs to be done. The messaging framework needs to speak to all of them without becoming generic. Select a persona below.</p>
+
+    <div class="persona-grid rv">
+      <div class="ptab" onclick="swPersona('sales',this)">
+        <div class="ptab-role">High-value user</div>
+        <div class="ptab-name">The Sales Rep</div>
+        <div class="ptab-hint">Wants to stop losing deal context. Needs CRM sync that actually works.</div>
+      </div>
+      <div class="ptab" onclick="swPersona('ops',this)">
+        <div class="ptab-role">Champion + buyer</div>
+        <div class="ptab-name">The Team Lead / Manager</div>
+        <div class="ptab-hint">Wants team accountability and call visibility without being in every meeting.</div>
+      </div>
+      <div class="ptab" onclick="swPersona('it',this)">
+        <div class="ptab-role">Gate-keeper</div>
+        <div class="ptab-name">IT / Security Admin</div>
+        <div class="ptab-hint">Needs SOC 2, HIPAA options, data governance, and SSO before anyone gets access.</div>
+      </div>
+    </div>
+
+    <div class="persona-out rv">
+      <div class="persona-idle" id="persona-idle">Select a persona above to expand the messaging brief.</div>
+
+      <div class="persona-content" id="pc-sales">
+        <span class="pc-role">Sales Rep · High-velocity user</span>
+        <div class="pc-hed">"I spend 40 minutes after every call updating Salesforce. I hate it and it's still incomplete."</div>
+        <div class="pc-body">
+          This person doesn't want a smarter notetaker. They want their post-call work to disappear. The use case is specific: call ends, Salesforce is already updated, follow-up email is drafted, and the next call starts fresh. That's the dream, and <strong>Fireflies can actually deliver it</strong> with CRM sync and the AI apps suite.
+          <br><br>
+          Messaging angle: don't talk about transcription. Talk about the 40 minutes they get back per call, multiplied across a 200-call month. The ROI math is so obvious it sells itself. What's missing is a landing page or ad that leads with that number.
+          <br><br>
+          Secondary message: "Your deals have institutional memory now." When a new AE inherits an account, they can pull every past conversation instead of starting from zero. That's a retention and onboarding story wrapped inside a sales story.
+        </div>
+        <div class="pc-tags">
+          <span class="pc-tag">CRM automation</span>
+          <span class="pc-tag">Call summaries</span>
+          <span class="pc-tag">Follow-up drafts</span>
+          <span class="pc-tag">Deal context</span>
+          <span class="pc-tag">Time savings</span>
+        </div>
+      </div>
+
+      <div class="persona-content" id="pc-ops">
+        <span class="pc-role">Team Lead / Manager · Champion and economic buyer</span>
+        <div class="pc-hed">"I can't sit on every call. But I still need to know what's happening in my team's conversations."</div>
+        <div class="pc-body">
+          This person is the key conversion driver. They're the one who upgrades a free account to Business and gets the team onboarded. Their problem isn't note-taking, it's distributed oversight: sales managers who need call coaching data, product managers who need to cross-reference 30 customer conversations, recruiting leads who need scorecard consistency across 15 interviewers.
+          <br><br>
+          Messaging angle: <strong>"See everything your team talks about, without being in the room."</strong> Not surveillance, visibility. The framing matters: frame it around team effectiveness and onboarding speed, not monitoring. New hire joins? They have access to every relevant conversation from day one.
+          <br><br>
+          The 200+ AI apps suite is the hook for this persona. Show them one app that solves their specific workflow (recruiting scorecard, sales pipeline update, sprint review notes) and they'll see the rest of the suite as a bonus, not a feature list.
+        </div>
+        <div class="pc-tags">
+          <span class="pc-tag">Team visibility</span>
+          <span class="pc-tag">AI apps suite</span>
+          <span class="pc-tag">Onboarding acceleration</span>
+          <span class="pc-tag">Cross-team search</span>
+        </div>
+      </div>
+
+      <div class="persona-content" id="pc-it">
+        <span class="pc-role">IT / Security Admin · Gate-keeper, not a user</span>
+        <div class="pc-hed">"Before anyone installs this, I need to know where the recordings go, who can access them, and what happens if an employee leaves."</div>
+        <div class="pc-body">
+          This persona never appears in Fireflies' user-facing copy, but they block or accelerate every enterprise deal. Their questions are specific: Is this SOC 2 Type II certified? Does HIPAA apply to our use case? Can we restrict recording to company-owned meetings only? What happens to data when an employee is off-boarded?
+          <br><br>
+          <strong>Fireflies has the answers</strong>: SOC 2 Type II certification, HIPAA compliance available with Business Associate Agreement on Business and Enterprise plans. The problem is that these answers are buried. Security and compliance pages should be first-class destinations, not fine-print footnotes.
+          <br><br>
+          The missing asset: a one-page security brief written in the language IT admins speak, covering data residency, retention controls, SSO, access permissions, and audit logs. That document unlocks procurement faster than any feature comparison.
+        </div>
+        <div class="pc-tags">
+          <span class="pc-tag">SOC 2 Type II</span>
+          <span class="pc-tag">HIPAA</span>
+          <span class="pc-tag">SSO / SAML</span>
+          <span class="pc-tag">Data retention</span>
+          <span class="pc-tag">Offboarding controls</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 04: GTM BRIEF ========== -->
+<section id="gtm">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">04</span>
+      <span class="sec-ttl">GTM Brief</span>
+    </div>
+
+    <div class="gtm-grid rv">
+      <div class="gcard hl full">
+        <span class="gcard-lbl">Core GTM thesis</span>
+        <h4>Fireflies' next growth motion: turn every AI app into a growth loop.</h4>
+        <p>The 200+ AI apps suite is structurally underutilized as a distribution mechanism. Each app is a workflow change. Every workflow change is a sharing moment. When a sales manager sees a clean auto-generated call scorecard appear in their Slack after every call, they tell their peer at another company. That's referral growth baked into product behavior. The GTM brief below is built around activating this loop.</p>
+      </div>
+
+      <div class="gcard">
+        <span class="gcard-lbl">Segment 1: PLG expansion</span>
+        <h4>Individual free users to team Business plans</h4>
+        <p>The free user is typically an IC who adopted Fireflies without IT approval. The upgrade trigger: they use one AI app and realize the output is better when they can see teammates' meetings too. The GTM motion here is in-product: surface the team benefit at the exact moment a free user tries to reference a call they weren't on. <strong>The paywall should appear right at the "aha, I need my team on this" moment.</strong></p>
+      </div>
+
+      <div class="gcard">
+        <span class="gcard-lbl">Segment 2: Gong/Chorus displacement</span>
+        <h4>Mid-market sales teams, 10-100 reps</h4>
+        <p>Companies with 10-100 sales reps paying $1,200+/user/year for Gong are exposed. A targeted campaign with a Fireflies cost model calculator could convert meaningfully. The message isn't "Fireflies is better than Gong," it's "Gong was built for 200-rep enterprise floors. If you have 25 reps, you're paying for infrastructure you'll never use." <strong>Displacement campaigns work when they're honest about the use case fit.</strong></p>
+      </div>
+
+      <div class="gcard">
+        <span class="gcard-lbl">Segment 3: Global / distributed teams</span>
+        <h4>60+ language support as the differentiator</h4>
+        <p>No other meeting intelligence tool has cross-language support at this depth. A company with teams in India, Germany, Brazil, and the US has a real problem: their meetings happen in multiple languages and the institutional knowledge is siloed. Fireflies solves this out of the box. A vertical campaign targeting global-first companies (especially in tech and consulting) with this message is wide open.</p>
+      </div>
+
+    </div>
+
+    <!-- Funnel -->
+    <h4 class="rv" style="font-family:'Literata',serif;font-style:italic;font-weight:300;font-size:20px;color:var(--t1);margin-top:40px;margin-bottom:8px;">Activation funnel: PLG loop</h4>
+    <p class="rv" style="font-size:13px;color:var(--t2);margin-bottom:12px;">How a free individual user becomes a paid team.</p>
+    <div class="funnel rv">
+      <div class="funnel-step">
+        <span class="f-num">01</span>
+        <span class="f-stage">Discovery</span>
+        <span class="f-desc">Sees Fireflies in a meeting as a participant. Checks the feature. Signs up for free. Zero friction.</span>
+        <span class="f-tag"><span class="badge b-ok">Free</span></span>
+      </div>
+      <div class="funnel-step">
+        <span class="f-num">02</span>
+        <span class="f-stage">Activation</span>
+        <span class="f-desc">First meeting summary lands in inbox. AskFred query retrieves a detail they needed from last week. Product value is immediate and personal.</span>
+        <span class="f-tag"><span class="badge b-ok">Free</span></span>
+      </div>
+      <div class="funnel-step">
+        <span class="f-num">03</span>
+        <span class="f-stage">AI App trigger</span>
+        <span class="f-desc">User tries a departmental AI app: sales scorecard, meeting agenda generator, recruiting debrief. One click. They share the output on Slack.</span>
+        <span class="f-tag"><span class="badge b-fire">Pro</span></span>
+      </div>
+      <div class="funnel-step">
+        <span class="f-num">04</span>
+        <span class="f-stage">Team need surfaces</span>
+        <span class="f-desc">They want to search a colleague's meeting for context. They want shared smart filters across the team. They hit the team feature limit.</span>
+        <span class="f-tag"><span class="badge b-opp">Upgrade trigger</span></span>
+      </div>
+      <div class="funnel-step">
+        <span class="f-num">05</span>
+        <span class="f-stage">Champion converts</span>
+        <span class="f-desc">They bring it to their manager. The manager upgrades for the team. Enterprise IT is looped in. One free user becomes 15 Business seats.</span>
+        <span class="f-tag"><span class="badge b-fire">Business</span></span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 05: COPY ========== -->
+<section id="copy">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">05</span>
+      <span class="sec-ttl">Copy Samples</span>
+    </div>
+
+    <div class="copy-block rv">
+      <div class="copy-top">
+        <span class="copy-ch">Homepage / Hero Rewrite</span>
+        <span class="badge b-fire">Positioning shift</span>
+      </div>
+      <div class="copy-body">
+        <div class="copy-hed">Your meetings have been talking. Now they can actually think back.</div>
+        <div class="copy-txt">Every conversation your team has is a data point. A decision, a commitment, a customer signal, a competitive mention. Fireflies captures all of it, organizes it, and lets you ask it questions, trigger workflows from it, and search it six months later like it happened this morning.</div>
+        <div class="copy-txt">Trusted by 20 million people across 500,000 organizations. Profitable since 2023. The AI teammate for teams who measure results, not just run meetings.</div>
+        <div class="copy-txt" style="font-size:13px;color:var(--t3);">CTAs: "Start for free" &nbsp;&bull;&nbsp; "See how teams use it"</div>
+        <div class="copy-why"><strong>Why this works:</strong> "Your meetings have been talking" is active and creates curiosity. It implies that something has been happening that the reader hasn't fully accessed yet. "Now they can actually think back" introduces the product benefit without naming the category. The body copy grounds it in concrete behavior: capture, organize, query, trigger, search. The trust signals (20M users, profitable) appear at the end as reinforcement, not the lead, which avoids the empty credential trap that "the #1 AI meeting assistant" framing falls into.</div>
+      </div>
+    </div>
+
+    <div class="copy-block rv">
+      <div class="copy-top">
+        <span class="copy-ch">Talk to Fireflies · Feature Launch / Landing Page</span>
+        <span class="badge b-miss">Category claim</span>
+      </div>
+      <div class="copy-body">
+        <div class="copy-hed">The first meeting assistant that knows what's happening in the room and outside it.</div>
+        <div class="copy-txt">During your next call, say "Hey Fireflies" or type /ff into the meeting chat. Ask about the competitive landscape. Check what decisions have been made so far. Run a market size estimate without leaving the conversation.</div>
+        <div class="copy-txt">Fireflies partners with Perplexity to bring real-time web knowledge into every meeting, in 60+ languages. Your meeting intelligence and the world's knowledge, in one place, for the first time.</div>
+        <div class="copy-why"><strong>Why this works:</strong> "Knows what's happening in the room and outside it" is the category frame: conversation intelligence plus world knowledge. The specific command examples (/ff, "Hey Fireflies") ground it in real usage behavior and make it concrete rather than abstract. "For the first time" is a category-defining close that's earned by the specificity of what came before. This is the launch copy the feature deserved but didn't quite get.</div>
+      </div>
+    </div>
+
+    <div class="copy-block rv">
+      <div class="copy-top">
+        <span class="copy-ch">Sales Use Case Page / Hero</span>
+        <span class="badge b-opp">Displacement angle</span>
+      </div>
+      <div class="copy-body">
+        <div class="copy-hed">Close the call, skip the CRM update.</div>
+        <div class="copy-txt">Fireflies joins your sales calls, transcribes them, extracts action items and deal updates, and syncs to Salesforce, HubSpot, or Pipedrive while you're already on the next call. No post-call cleanup. No "I'll update the notes tonight."</div>
+        <div class="copy-txt">Teams using Fireflies report saving 30-45 minutes per rep per day on post-call administration. At 20 reps, that's 10-15 hours of selling time recovered every day. Here's what that math looks like for your team: [Calculator CTA]</div>
+        <div class="copy-why"><strong>Why this works:</strong> "Close the call, skip the CRM update" speaks to a specific pain that every AE recognizes immediately. "I'll update the notes tonight" is a phrase every sales manager has heard. Grounding the ROI in a per-rep, per-day number and offering a calculator converts the emotional resonance into a business case. Note: the 30-45 minute figure should be validated against verified customer data or labeled as an estimate range before publication.</div>
+      </div>
+    </div>
+
+    <div class="copy-block rv">
+      <div class="copy-top">
+        <span class="copy-ch">Email / PLG Nurture: Free to Pro upgrade</span>
+        <span class="badge b-ok">Conversion</span>
+      </div>
+      <div class="copy-body">
+        <div class="copy-hed">Subject: You've had 12 meetings on Fireflies. Here's what your team is missing.</div>
+        <div class="copy-txt">Hi [Name],<br><br>You've recorded 12 meetings this month. That's a lot of decisions, action items, and context sitting in your account, accessible to you but invisible to everyone else on your team.</div>
+        <div class="copy-txt">One thing we see consistently: the teams who get the most from Fireflies are the ones where multiple people can search the same conversations. When your manager can pull up last week's customer call without asking you, and when a new hire on day one can search six months of onboarding context, the tool starts compounding. Upgrade takes 2 minutes. Your next meeting is already recording.</div>
+        <div class="copy-why"><strong>Why this works:</strong> Opens with their specific data (12 meetings) to signal personalization, not just merge-tag spam. "Invisible to everyone else" names the exact gap the upgrade resolves, without being manipulative about it. The two use cases (manager visibility, new hire onboarding) are real and relatable, not abstract benefits. The close ("Your next meeting is already recording") is calm and confident, not pushy, which fits the tone of a product people trust with sensitive conversations.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 06: OTHER WORK ========== -->
+<section id="work" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-lbl rv">
+      <span class="sec-num">06</span>
+      <span class="sec-ttl">Other Relevant Work</span>
+    </div>
+
+    <div class="wgrid rv">
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/Continuous/" target="_blank" rel="noopener">
+        <span class="wcard-tag">Full PoW &nbsp;&bull;&nbsp; PLG + SaaS growth</span>
+        <h4>Continuous</h4>
+        <p>End-to-end PMM work for a developer tool with both a self-serve PLG motion and an enterprise sales overlay. Covers the full spectrum from free user activation to team upgrade triggers, a structural challenge directly relevant to Fireflies' own PLG loop.</p>
+        <span class="wcard-arr">&rarr;</span>
+      </a>
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/Revolut-Used-Gone-Campaign/" target="_blank" rel="noopener">
+        <span class="wcard-tag">Campaign &nbsp;&bull;&nbsp; Consumer-to-B2B crossover</span>
+        <h4>Revolut · Used &amp; Gone</h4>
+        <p>A full campaign concept for a product that needed consumer-grade emotional resonance while functioning in a business context. Relevant because Fireflies is hiring for someone who can bring B2C growth thinking into a B2B SaaS product, which is exactly what this campaign demonstrates.</p>
+        <span class="wcard-arr">&rarr;</span>
+      </a>
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/RelayFi_PoW/" target="_blank" rel="noopener">
+        <span class="wcard-tag">Full PoW &nbsp;&bull;&nbsp; Multi-persona messaging</span>
+        <h4>RelayFi</h4>
+        <p>Full product marketing brief covering positioning, multi-buyer personas, GTM framing, and copy. Shows the complete end-to-end PMM workflow at a lean-startup scale: one person covering everything from market framing to individual landing page copy.</p>
+        <span class="wcard-arr">&rarr;</span>
+      </a>
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/SarvamAI-PMM/" target="_blank" rel="noopener" style="display:none" id="sarvam-hide">hidden</a>
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/Canonical/" target="_blank" rel="noopener">
+        <span class="wcard-tag">Full PoW &nbsp;&bull;&nbsp; Developer-led growth</span>
+        <h4>Canonical</h4>
+        <p>Positioning audit, GTM brief, and multi-buyer copy for an open-source infrastructure product with a developer community on one side and enterprise procurement on the other. The dual-audience challenge mirrors Fireflies' split between end-user adoption and IT/security gate-keeping.</p>
+        <span class="wcard-arr">&rarr;</span>
+      </a>
+
+      <a class="wcard" href="https://bhanuexcalibur.github.io/Razorpay/" target="_blank" rel="noopener">
+        <span class="wcard-tag">Full PoW &nbsp;&bull;&nbsp; High-growth SaaS</span>
+        <h4>Razorpay</h4>
+        <p>PMM brief for a high-growth fintech platform navigating rapid product expansion and category definition. Relevant for understanding how to tell a coherent product story across a platform that's grown beyond its original identity, which is the exact narrative challenge Fireflies faces as it moves from "notetaker" to "meeting intelligence platform."</p>
+        <span class="wcard-arr">&rarr;</span>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER / SIG -->
+<div class="sig">
+  <div>
+    <div class="sig-name">Bhanu <span>Kumar</span></div>
+    <div class="sig-links">
+      <a href="mailto:bhanukumar0902@gmail.com">bhanukumar0902@gmail.com</a><br>
+      <a href="https://linkedin.com/in/bhanuexcalibur" target="_blank" rel="noopener">LinkedIn</a>
+      &nbsp;&bull;&nbsp;
+      <a href="https://x.com/excaliburbhanu" target="_blank" rel="noopener">X / Twitter</a>
+    </div>
+  </div>
+  <div class="sig-btns">
+    <a class="sbtn pri" href="mailto:bhanukumar0902@gmail.com">Get in touch &rarr;</a>
+    <a class="sbtn ghost" href="https://drive.google.com/file/d/1OO8EEGRcKXnSBdIfGVzNjkymMMsut0EL/view" target="_blank" rel="noopener">Full resume</a>
+  </div>
+</div>
+
+<script>
+/* NAV */
+function toggleMob(){
+  document.getElementById('hbg').classList.toggle('open');
+  document.getElementById('mobm').classList.toggle('open');
+}
+function closeMob(){
+  document.getElementById('hbg').classList.remove('open');
+  document.getElementById('mobm').classList.remove('open');
+}
+
+/* AUDIT TABS */
+function swAudit(id,btn){
+  document.querySelectorAll('.apanel').forEach(function(p){p.classList.remove('on');});
+  document.querySelectorAll('.atab').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('ap-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* PERSONAS */
+var pMap = {sales:'pc-sales',ops:'pc-ops',it:'pc-it'};
+function swPersona(type,card){
+  document.querySelectorAll('.ptab').forEach(function(c){c.classList.remove('on');});
+  card.classList.add('on');
+  var idle = document.getElementById('persona-idle');
+  if(idle) idle.style.display='none';
+  Object.values(pMap).forEach(function(id){
+    var el=document.getElementById(id);
+    if(el){el.classList.remove('on');el.style.display='none';}
+  });
+  var target=document.getElementById(pMap[type]);
+  if(target){
+    target.style.display='block';
+    target.style.opacity='0';
+    target.style.transform='translateY(10px)';
+    target.style.transition='opacity 0.24s ease,transform 0.24s ease';
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        target.style.opacity='1';
+        target.style.transform='translateY(0)';
+        target.classList.add('on');
+      });
+    });
+  }
+}
+
+/* SCROLL REVEAL */
+if('IntersectionObserver' in window){
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}
+    });
+  },{threshold:0.04,rootMargin:'0px 0px -8px 0px'});
+  document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
+}else{
+  document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});
+}
+window.addEventListener('load',function(){
+  document.querySelectorAll('.rv').forEach(function(el){
+    var r=el.getBoundingClientRect();
+    if(r.top<window.innerHeight-20){el.classList.add('in');}
+  });
+});
+
+/* ACTIVE NAV */
+var sections=document.querySelectorAll('section[id]');
+var navLinks=document.querySelectorAll('.nav-links .nl');
+window.addEventListener('scroll',function(){
+  var scrollY=window.pageYOffset;
+  sections.forEach(function(s){
+    var top=s.offsetTop-80;
+    var bottom=top+s.offsetHeight;
+    var id=s.getAttribute('id');
+    if(scrollY>=top&&scrollY<bottom){
+      navLinks.forEach(function(l){
+        l.classList.remove('act');
+        if(l.getAttribute('href')==='#'+id){l.classList.add('act');}
+      });
+    }
+  });
+});
+</script>
+</body>
+</html>
